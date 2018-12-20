@@ -27,14 +27,14 @@ def handler(event, context):
                                          f'/tmp/{script}')
 
     try:
-        command = ['./package/packer', 'validate', '/tmp/packer.json']
+        command = ['./packer', 'validate', '/tmp/packer.json']
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError:
         print("Error validating packer template")
         raise
 
     try:
-        command = ['./package/packer', 'build', '/tmp/packer.json']
+        command = ['./packer', 'build', '/tmp/packer.json']
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError:
         print("Error building AMI")
