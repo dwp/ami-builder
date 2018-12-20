@@ -14,9 +14,10 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            set -x
             mkdir artifacts
             sudo pip install -r requirements.txt -t artifacts
-            cp ami-builder.py LICENSE packer_template.json.j2 README.md artifacts
+            cp -v ami-builder.py LICENSE packer_template.json.j2 README.md artifacts
             cd artifacts
             LATEST_VERSION=$(curl --silent "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
             VERSION=$(echo $LATEST_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
