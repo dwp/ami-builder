@@ -1,0 +1,22 @@
+{
+    "builders": [{
+      "type": "amazon-ebs",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "{{ event['source_ami_virt_type'] or 'hvm' }}",
+          "name": "{{ event['source_ami_name'] or 'CentOS Linux 7 x86_64*'}}",
+          "root-device-type": "{{ event['source_ami_root_device_type'] or 'ebs'}}"
+        },
+        "owners": ["{{ event['source_ami_owner'] or '679593333241' }}"],
+        "most_recent": true
+      },
+      "instance_type": "{{ event['instance_type'] or 't2.micro' }}",
+      "ssh_username": "{{ event['ssh_username'] or 'centos' }}",
+      "subnet_id": "{{ event['subnet_id'] }}",
+      "ami_name": "{{ event['ami_name'] }}"
+    }],
+    "provisioners": [{
+      "type": "{{ event['provisioner_type'] or 'shell' }}",
+      "script": "{{ event['provisioner_script'] or '/tmp/provision.sh' }}"
+    }]
+}
