@@ -23,7 +23,7 @@ you will need to provide it with a payload file.  An example is given below:
     "packer_template_bucket":      "my-bucket-name",
     "packer_template_key":         "packer_template.json.j2",
     "provision_script_bucket":     "my-bucket-name",
-    "provisioner_script_keys":     ["provision.sh"],
+    "provision_script_keys":     ["provision.sh"],
     "source_ami_virt_type":        "hvm",
     "source_ami_name":             "CentOS Linux 7 x86_64*",
     "source_ami_root_device_type": "ebs",
