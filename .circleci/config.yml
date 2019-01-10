@@ -17,7 +17,7 @@ jobs:
             set -x
             mkdir artifacts
             sudo pip install -r requirements.txt -t artifacts
-            cp -v ami-builder.py LICENSE packer_template.json.j2 README.md artifacts
+            cp -v ami_builder.py LICENSE packer_template.json.j2 README.md artifacts
             curl -O https://releases.hashicorp.com/packer/1.3.3/packer_1.3.3_linux_amd64.zip
             cd artifacts
             unzip ../packer_1.3.3_linux_amd64.zip
