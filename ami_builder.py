@@ -8,8 +8,8 @@ def handler(event, context):
     s3 = boto3.resource('s3')
 
     if event['packer_template_bucket'] and event['packer_template_key']:
-        s3.meta.client.download_file(event['provision_script_bucket'],
-                                     event['provision_script_key'],
+        s3.meta.client.download_file(event['packer_template_bucket'],
+                                     event['packer_template_key'],
                                      '/tmp/packer_template.json.j2')
     else:
         print("Missing required configuration")
@@ -23,7 +23,7 @@ def handler(event, context):
     if event['provision_script_bucket'] and event['provision_script_keys']:
         for script in event['provision_script_keys']:
             s3.meta.client.download_file(event['provision_script_bucket'],
-                                         event['provision_script_key'],
+                                         script,
                                          f'/tmp/{script}')
 
     try:
