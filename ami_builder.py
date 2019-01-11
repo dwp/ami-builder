@@ -1,3 +1,4 @@
+import botocore
 import boto3
 import jinja2
 import os
@@ -5,7 +6,7 @@ import subprocess
 import sys
 
 def handler(event, context):
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource('s3', config=botocore.config.Config(s3={'addressing_style':'path'})
 
     if event['packer_template_bucket'] and event['packer_template_key']:
         s3.meta.client.download_file(event['packer_template_bucket'],
