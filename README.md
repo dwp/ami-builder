@@ -20,18 +20,20 @@ you will need to provide it with a payload file.  An example is given below:
 
 ```
 {
-    "packer_template_bucket":      "my-bucket-name",
-    "packer_template_key":         "packer_template.json.j2",
-    "provision_script_bucket":     "my-bucket-name",
-    "provision_script_keys":     ["provision.sh"],
-    "source_ami_virt_type":        "hvm",
-    "source_ami_name":             "CentOS Linux 7 x86_64*",
-    "source_ami_root_device_type": "ebs",
-    "source_ami_owner":            "679593333241",
-    "instance_type":               "t2.micro",
-    "ssh_username":                "centos",
-    "subnet_id":                   "subnet-0a00aaa0",
-    "ami_name":                    "my-first-ami"
+    "packer_template_bucket_region":  "eu-west-1",
+    "packer_template_bucket":         "my-bucket-name",
+    "packer_template_key":            "packer_template.json.j2",
+    "provision_script_bucket_region": "eu-west-1",
+    "provision_script_bucket":        "my-bucket-name",
+    "provision_script_keys":          ["provision.sh"],
+    "source_ami_virt_type":           "hvm",
+    "source_ami_name":                "CentOS Linux 7 x86_64*",
+    "source_ami_root_device_type":    "ebs",
+    "source_ami_owner":               "679593333241",
+    "instance_type":                  "t2.micro",
+    "ssh_username":                   "centos",
+    "subnet_id":                      "subnet-0a00aaa0",
+    "ami_name":                       "my-first-ami"
 }
 ```
 
