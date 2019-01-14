@@ -22,9 +22,7 @@ def handler(event, context):
         s3 = boto3.resource('s3', event['packer_template_bucket_region'],
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style':'path'}))
-        s3.meta.client.download_file(event['packer_template_bucket'],
-                                     event['packer_template_key'],
-                                     '/tmp/packer_template.json.j2')
+        s3.Bucket(event['packer_template_bucket']).download_file(event['packer_template_key'], '/tmp/packer_template.json.j2')
     else:
         print("Missing required configuration")
         raise Exception
@@ -40,8 +38,7 @@ def handler(event, context):
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style':'path'}))
         for script in event['provision_script_keys']:
-            s3.meta.client.download_file(event['provision_script_bucket'],
-                                         script, f'/tmp/{script}')
+            s3.Bucket(event['provision_script_bucket']).download_file(script, f'/tmp/{script}')
 
     try:
         command = ['./packer', 'validate', '/tmp/packer.json']
