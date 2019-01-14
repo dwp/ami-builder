@@ -10,7 +10,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context):
-    if event['log_level']:
+    if 'log_level' in event:
         try:
             logger.setLevel(logging.getLevelName(event['log_level'].upper()))
         except ValueError:
