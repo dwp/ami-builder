@@ -16,6 +16,11 @@ def handler(event, context):
         except ValueError:
             logger.warning(f"Invalid log level specified: {event['log_level']}; using INFO")
 
+    if logger.getEffectiveLevel() == logging.DEBUG:
+        # Log everything from boto3
+        boto3.set_stream_logger()
+        logger.debug(f"Using boto3 {boto3.__version__}")
+
     if event['packer_template_bucket_region'] and event['packer_template_bucket'] and event['packer_template_key']:
         s3_url=f"https://s3.{event['packer_template_bucket_region']}.amazonaws.com"
         logger.info(f"Getting packer template from {s3_url}/{event['packer_template_bucket']}/{event['packer_template_key']}")
