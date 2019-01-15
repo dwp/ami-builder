@@ -5,6 +5,7 @@ import logging
 import os
 import subprocess
 import sys
+from botocore.exceptions import ClientError
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -29,7 +30,11 @@ def handler(event, context):
         s3 = boto3.resource('s3',
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style':'path'}))
-        s3.Bucket(event['packer_template_bucket']).download_file(event['packer_template_key'], '/tmp/packer_template.json.j2')
+        try:
+            s3.Bucket(event['packer_template_bucket']).download_file(event['packer_template_key'], '/tmp/packer_template.json.j2')
+        except ClientError as e:
+            logger.error(f"Unable to download packer template file: {e}")
+            raise
     else:
         print("Missing required configuration")
         raise Exception
@@ -48,18 +53,24 @@ def handler(event, context):
                             config=botocore.config.Config(s3={'addressing_style':'path'}))
         for script in event['provision_script_keys']:
             logger.info(f"Getting provision script from {s3_url}/{event['provision_script_bucket']}/{script}")
-            s3.Bucket(event['provision_script_bucket']).download_file(script, f'/tmp/{script}')
+            try:
+                s3.Bucket(event['provision_script_bucket']).download_file(script, f'/tmp/{script}')
+            except ClientError as e:
+                logger.error(f"Unable to download provisioning script: {e}")
+                raise
 
     try:
         command = ['./packer', 'validate', '/tmp/packer.json']
         subprocess.run(command, check=True)
-    except subprocess.CalledProcessError:
-        print("Error validating packer template")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Couldn't validate packer template: {e}")
+        with open('/tmp/packer.json', 'r') as f:
+            logger.debug(f.read())
         raise
 
     try:
         command = ['./packer', 'build', '/tmp/packer.json']
         subprocess.run(command, check=True)
-    except subprocess.CalledProcessError:
-        print("Error building AMI")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error building AMI: {e}")
         raise
