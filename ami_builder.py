@@ -26,7 +26,7 @@ def handler(event, context):
         boto3.set_stream_logger()
         logger.debug(f"Using boto3 {boto3.__version__}")
 
-    s3_url = f"https://s3.{event['Apacker_template_bucket_region']}.amazonaws.com"
+    s3_url = f"https://s3.{event['packer_template_bucket_region']}.amazonaws.com"
 
     if event['packer_template_bucket'] and event['packer_template_key']:
         logger.info(f"Getting packer template from {s3_url}/{event['packer_template_bucket']}/{event['packer_template_key']}")
