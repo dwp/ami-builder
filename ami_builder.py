@@ -45,7 +45,7 @@ def handler(event, context):
     with open(f'{download_dir}/packer_template.json.j2') as in_template:
         template = jinja2.Template(in_template.read())
     with open(f'{download_dir}/packer.json', 'w') as packer_file:
-        packer_file.write(template.render(event=event))
+        packer_file.write(template.render(event=event, download_dir=download_dir))
 
     if 'provision_script_bucket_region' in event:
         s3_url = f"https://s3.{event['provision_script_bucket_region']}.amazonaws.com"
