@@ -68,7 +68,7 @@ def handler(event, context):
             if not os.path.exists(f'{download_dir}/{os.path.dirname(file_path)}'):
                 os.makedirs(f'{download_dir}/{os.path.dirname(file_path)}')
             try:
-                s3.Bucket(event['provision_script_bucket']).download_file(script, f'{download_dir}/{file_path}')
+                s3.Bucket(event['provision_script_bucket']).download_file(file_path, f'{download_dir}/{file_path}')
             except ClientError as e:
                 logger.error(f"Unable to download provisioning file: {e}")
                 raise
