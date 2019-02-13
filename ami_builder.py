@@ -50,28 +50,30 @@ def handler(event, context):
     if 'provision_script_bucket_region' in event:
         s3_url = f"https://s3.{event['provision_script_bucket_region']}.amazonaws.com"
 
-    if event['provision_script_bucket'] and event['provision_script_keys']:
+    if event['provision_script_bucket']:
         s3 = boto3.resource('s3',
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style': 'path'}))
-        for script in event['provision_script_keys']:
-            logger.info(f"Getting provision script from {s3_url}/{event['provision_script_bucket']}/{script}")
-            if not os.path.exists(f'{download_dir}/{os.path.dirname(script)}'):
-                os.makedirs(f'{download_dir}/{os.path.dirname(script)}')
-            try:
-                s3.Bucket(event['provision_script_bucket']).download_file(script, f'{download_dir}/{script}')
-            except ClientError as e:
-                logger.error(f"Unable to download provisioning script: {e}")
-                raise
-        for file_path in event['provision_file_keys']:
-            logger.info(f"Getting provision files from {s3_url}/{event['provision_script_bucket']}/{file_path}")
-            if not os.path.exists(f'{download_dir}/{os.path.dirname(file_path)}'):
-                os.makedirs(f'{download_dir}/{os.path.dirname(file_path)}')
-            try:
-                s3.Bucket(event['provision_script_bucket']).download_file(file_path, f'{download_dir}/{file_path}')
-            except ClientError as e:
-                logger.error(f"Unable to download provisioning file: {e}")
-                raise
+        if event['provision_script_keys']:
+            for script in event['provision_script_keys']:
+                logger.info(f"Getting provision script from {s3_url}/{event['provision_script_bucket']}/{script}")
+                if not os.path.exists(f'{download_dir}/{os.path.dirname(script)}'):
+                    os.makedirs(f'{download_dir}/{os.path.dirname(script)}')
+                try:
+                    s3.Bucket(event['provision_script_bucket']).download_file(script, f'{download_dir}/{script}')
+                except ClientError as e:
+                    logger.error(f"Unable to download provisioning script: {e}")
+                    raise
+        if event['provision_file_keys']:
+            for file_path in event['provision_file_keys']:
+                logger.info(f"Getting provision files from {s3_url}/{event['provision_script_bucket']}/{file_path}")
+                if not os.path.exists(f'{download_dir}/{os.path.dirname(file_path)}'):
+                    os.makedirs(f'{download_dir}/{os.path.dirname(file_path)}')
+                try:
+                    s3.Bucket(event['provision_script_bucket']).download_file(file_path, f'{download_dir}/{file_path}')
+                except ClientError as e:
+                    logger.error(f"Unable to download provisioning file: {e}")
+                    raise
 
     try:
         command = ['./packer', 'validate', f'{download_dir}/packer.json']
