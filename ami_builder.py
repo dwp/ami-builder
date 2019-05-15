@@ -34,8 +34,8 @@ def handler(event, context):
         # Log everything from boto3
         boto3.set_stream_logger()
     logger.debug(f"Using boto3 {boto3.__version__}")
-
     logger.debug(event)
+
     s3_url = f"https://s3.{event['packer_template_bucket_region']}.amazonaws.com"
 
     if event['packer_template_bucket'] and event['packer_template_key']:
@@ -56,8 +56,7 @@ def handler(event, context):
         template = jinja2.Template(in_template.read())
     with open(f'{download_dir}/packer.json', 'w') as packer_file:
         packer_file.write(template.render(event=event, download_dir=download_dir))
-        logger.info(template)
-
+        logger.debug(packer_file.read())
 
     if 'provision_script_bucket_region' in event:
         s3_url = f"https://s3.{event['provision_script_bucket_region']}.amazonaws.com"
