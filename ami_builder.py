@@ -105,10 +105,10 @@ if __name__ == "__main__":
     json_content = json.loads(open('event.json', 'r').read())
     try:
         handler(json_content, None)
-    except Exception as e:
-        logger.error(e)
-        sys.exit(1)
     except KeyError as key_name:
         logger.error(f'Key: {key_name} is required in payload')
+        sys.exit(1)
+    except Exception as e:
+        logger.error(e)
         sys.exit(1)
 
