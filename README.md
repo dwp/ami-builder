@@ -167,7 +167,7 @@ Here additional configuration files can be added. The example below is for the D
       - .: (( inject meta.plan.build-ami ))
 ```
 
-#CONCOURSE AMI BUILD PIPELINE JOBS:
+# CONCOURSE AMI BUILD PIPELINE JOBS:
 
 [AMI Builder Release](https://concourse.service.dw/teams/dataworks/pipelines/management)
 [AMI Builder Config Release](https://concourse.service.dw/teams/dataworks/pipelines/management?groups=AMIs)
