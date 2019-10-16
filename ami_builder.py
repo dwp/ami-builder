@@ -94,7 +94,10 @@ def handler(event, context):
         raise
 
     try:
-        command = ['./packer', 'build', f'{download_dir}/packer.json']
+        if logger.isEnabledFor(logging.DEBUG):
+            command = ['./packer', 'build', '-debug', f'{download_dir}/packer.json']
+        else:
+            command = ['./packer', 'build', f'{download_dir}/packer.json']
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Error building AMI: {e}")
