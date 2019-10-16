@@ -95,7 +95,7 @@ def handler(event, context):
 
     try:
         if logger.isEnabledFor(logging.DEBUG):
-            command = ['./packer', 'build', '-debug', f'{download_dir}/packer.json']
+            command = ['./packer', 'build', '-on-error=abort', f'{download_dir}/packer.json']
         else:
             command = ['./packer', 'build', f'{download_dir}/packer.json']
         subprocess.run(command, check=True)
