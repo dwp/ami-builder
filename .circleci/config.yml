@@ -18,9 +18,10 @@ jobs:
             mkdir artifacts
             sudo pip install -r requirements.txt -t artifacts
             cp -v ami_builder.py LICENSE packer_template.json.j2 README.md artifacts
-            curl -O https://releases.hashicorp.com/packer/1.4.4/packer_1.4.4_linux_amd64.zip
+            PACKER_VERSION=1.4.4
+            curl -O https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
             cd artifacts
-            unzip ../packer_1.3.3_linux_amd64.zip
+            unzip ../packer_${PACKER_VERSION}_linux_amd64.zip
             LATEST_VERSION=$(curl --silent "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
             VERSION=$(echo $LATEST_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
             VERSION_NUMBER=$(echo $VERSION | sed 's/^v\(.*\)$/\1/')
