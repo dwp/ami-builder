@@ -24,11 +24,6 @@ def handler(event, context):
     download_dir = '/tmp'
     if 'AWS_PROFILE' in os.environ:
         boto3.setup_default_session(profile_name=os.environ['AWS_PROFILE'])
-    if 'log_level' in event:
-        try:
-            logger.setLevel(logging.getLevelName(event['log_level'].upper()))
-        except ValueError:
-            logger.warning(f"Invalid log level specified: {event['log_level']}; using INFO")
 
     if logger.isEnabledFor(logging.DEBUG):
         # Log everything from boto3
@@ -39,12 +34,14 @@ def handler(event, context):
     s3_url = f"https://s3.{event['packer_template_bucket_region']}.amazonaws.com"
 
     if event['packer_template_bucket'] and event['packer_template_key']:
-        logger.info(f"Getting packer template from {s3_url}/{event['packer_template_bucket']}/{event['packer_template_key']}")
+        logger.info(
+            f"Getting packer template from {s3_url}/{event['packer_template_bucket']}/{event['packer_template_key']}")
         s3 = boto3.resource('s3',
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style': 'path'}))
         try:
-            s3.Bucket(event['packer_template_bucket']).download_file(event['packer_template_key'], f'{download_dir}/packer_template.json.j2')
+            s3.Bucket(event['packer_template_bucket']).download_file(
+                event['packer_template_key'], f'{download_dir}/packer_template.json.j2')
         except ClientError as e:
             logger.error(f"Unable to download packer template file: {e}")
             raise
@@ -55,7 +52,8 @@ def handler(event, context):
     with open(f'{download_dir}/packer_template.json.j2') as in_template:
         template = jinja2.Template(in_template.read())
     with open(f'{download_dir}/packer.json', 'w+') as packer_file:
-        packer_file.write(template.render(event=event, download_dir=download_dir))
+        packer_file.write(template.render(
+            event=event, download_dir=download_dir))
         logger.debug(packer_file.read())
 
     if 'provision_script_bucket_region' in event:
@@ -66,20 +64,24 @@ def handler(event, context):
                             endpoint_url=s3_url,
                             config=botocore.config.Config(s3={'addressing_style': 'path'}))
         for script in event['provision_script_keys']:
-            logger.info(f"Getting provision script from {s3_url}/{event['provision_script_bucket']}/{script}")
+            logger.info(
+                f"Getting provision script from {s3_url}/{event['provision_script_bucket']}/{script}")
             if not os.path.exists(f'{download_dir}/{os.path.dirname(script)}'):
                 os.makedirs(f'{download_dir}/{os.path.dirname(script)}')
             try:
-                s3.Bucket(event['provision_script_bucket']).download_file(script, f'{download_dir}/{script}')
+                s3.Bucket(event['provision_script_bucket']).download_file(
+                    script, f'{download_dir}/{script}')
             except ClientError as e:
                 logger.error(f"Unable to download provisioning script: {e}")
                 raise
         for file_path in event['provision_file_keys']:
-            logger.info(f"Getting provision files from {s3_url}/{event['provision_script_bucket']}/{file_path}")
+            logger.info(
+                f"Getting provision files from {s3_url}/{event['provision_script_bucket']}/{file_path}")
             if not os.path.exists(f'{download_dir}/{os.path.dirname(file_path)}'):
                 os.makedirs(f'{download_dir}/{os.path.dirname(file_path)}')
             try:
-                s3.Bucket(event['provision_script_bucket']).download_file(file_path, f'{download_dir}/{file_path}')
+                s3.Bucket(event['provision_script_bucket']).download_file(
+                    file_path, f'{download_dir}/{file_path}')
             except ClientError as e:
                 logger.error(f"Unable to download provisioning file: {e}")
                 raise
@@ -95,7 +97,8 @@ def handler(event, context):
 
     try:
         if logger.isEnabledFor(logging.DEBUG):
-            command = ['./packer', 'build', '-on-error=abort', f'{download_dir}/packer.json']
+            command = ['./packer', 'build', '-on-error=abort',
+                       f'{download_dir}/packer.json']
         else:
             command = ['./packer', 'build', f'{download_dir}/packer.json']
         subprocess.run(command, check=True)
@@ -114,4 +117,3 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(e)
         sys.exit(1)
-
