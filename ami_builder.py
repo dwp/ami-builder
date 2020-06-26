@@ -33,7 +33,7 @@ def handler(event, context):
 
     s3_url = f"https://s3.{event['packer_template_bucket_region']}.amazonaws.com"
 
-    if event['packer_template_bucket'] and event['packer_template_key']:
+    if event['packer_template_bucket'] and event[ 'packer_template_key' ]:
         logger.info(
             f"Getting packer template from {s3_url}/{event['packer_template_bucket']}/{event['packer_template_key']}")
         s3 = boto3.resource('s3',
