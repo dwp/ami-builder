@@ -22,7 +22,7 @@ jobs:
         run: pip install black
 
       - name: Fix Path
-        run: export PATH=$PATH:/home/runner/.local/bin
+        run: export PATH=$PATH:~/home/runner/.local/bin
 
       - name: Run black --check .
         id: check-formatting
