@@ -24,8 +24,7 @@ jobs:
       - name: Fix Path
         run: |
           export PATH=$PATH:~/home/runner/.local/bin
-          ls /home/runner/.local/bin
-          ls ~/home/runner/.local/bin
+          ls $PATH
 
       - name: Run black --check .
         id: check-formatting
