@@ -59,6 +59,7 @@ jobs:
             sudo pip install -r requirements.txt -t artifacts
             cp -v ami_builder.py LICENSE packer_template.json.j2 README.md artifacts
             PACKER_VERSION=1.4.4
+            curl -O https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
             cd artifacts
             unzip ../packer_${PACKER_VERSION}_linux_amd64.zip
             set +o pipefail
